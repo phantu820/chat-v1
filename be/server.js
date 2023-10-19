@@ -200,9 +200,11 @@ io.on("connection", (socket) => {
     try {
       const { _id, newMessages } = req.body;
       const user = await User.findById(_id);
-      user.status = "offline";
-      user.newMessages = newMessages;
-      await user.save();
+      console.log(user);
+      // user.status = "offline";
+      await User.findOneAndUpdate({_id: _id}, {status: "offline", newMessages: newMessages});
+      // user.newMessages = newMessages;
+      // await user.save();
       const members = await User.find();
       socket.broadcast.emit("new-user", members);
 
