@@ -129,20 +129,6 @@ io.on("connection", (socket) => {
     socket.emit("room-messages", roomMessages);
   });
 
-  socket.on("add-group", async (name, members) => {
-    const today = new Date();
-    const minutes =
-      today.getMinutes() < 10 ? "0" + today.getMinutes() : today.getMinutes();
-
-    await Rooms.create({
-      name: name,
-      createdDate: getFormattedDate(),
-      createdTime: today.getHours() + ":" + minutes,
-      Members: members,
-    });
-    socket.emit();
-  });
-
   socket.on("remove-user", async (id) => {
     const user = await User.findById(id);
     const query = { "from._id": id };
@@ -231,23 +217,6 @@ io.on("connection", (socket) => {
   });
 });
 
-app.get("/rooms/:email", async (req, res) => {
-  const roomsObject = await Rooms.find({ Members: req.params.email });
-  let rooms = [];
-  for (let i = 0; i < roomsObject.length; i++) {
-    rooms[i] = roomsObject[i].name;
-  }
-  res.json(rooms);
-});
-
-app.get("/rooms", async (req, res) => {
-  const roomsObject = await Rooms.find();
-  let rooms = [];
-  for (let i = 0; i < roomsObject.length; i++) {
-    rooms[i] = roomsObject[i].name;
-  }
-  res.json(rooms);
-});
 
 app.post("/changepass", async (req, res) => {
   const { email, oldPassword, newPassword } = req.body;
